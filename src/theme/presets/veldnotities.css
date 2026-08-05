@@ -1,0 +1,39 @@
+/*
+  THEMA-PRESET — "Veldnotities"
+  ------------------------------------------------------------------
+  Warm, papierachtig alternatief voor "Signaal". Kopieer de inhoud van
+  dit bestand naar src/theme/tokens.css (of gebruik
+  scripts/wissel-thema.sh) om de site dit uiterlijk te geven.
+  Geen enkel component-bestand hoeft hiervoor aangepast te worden.
+*/
+
+:root {
+  /* --- Kleur --- */
+  --color-bg: 239 234 217;
+  --color-panel: 228 221 199;
+  --color-panel-hover: 220 211 184;
+  --color-border: 201 190 158;
+  --color-text: 43 42 34;
+  --color-muted: 110 104 82;
+  --color-accent: 59 107 68; /* bosgroen */
+  --color-accent-dim: 42 76 49;
+  --color-status-online: 61 110 122; /* petrol */
+  --color-status-soon: 184 121 59; /* okerbruin */
+  --color-status-offline: 110 104 82;
+
+  /* --- Typografie: typemachine + krantenserif in plaats van mono/sans --- */
+  --font-display: "Courier Prime", ui-monospace, monospace;
+  --font-body: "Source Serif 4", Georgia, serif;
+  --font-mono: "Courier Prime", ui-monospace, monospace;
+
+  /* --- Vorm: hoekiger, als een indexkaart --- */
+  --radius-card: 0.125rem;
+  --radius-pill: 0.125rem;
+  --border-width: 1px;
+
+  /* --- Motion --- */
+  --motion-fast: 150ms;
+  --motion-medium: 400ms;
+  --motion-slow: 900ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}

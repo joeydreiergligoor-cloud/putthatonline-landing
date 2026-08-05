@@ -1,0 +1,97 @@
+@import "./theme/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  background-color: rgb(var(--color-bg));
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+* {
+  scrollbar-color: rgb(var(--color-border)) rgb(var(--color-bg));
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--color-accent));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* --- Blueprint-achtige achtergrondtextuur voor de hero, subtiel --- */
+.blueprint-grid {
+  background-image: linear-gradient(rgb(var(--color-border) / 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--color-border) / 0.35) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask-image: radial-gradient(ellipse 60% 100% at 50% 0%, black 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 60% 100% at 50% 0%, black 0%, transparent 75%);
+}
+
+/* --- Trace-lijnen in het routingschema: "getekend" via transition, zie RoutingDiagram.tsx --- */
+.trace-dashed {
+  stroke-dasharray: 4 4 !important;
+}
+
+/* --- Kaarten: gestaffeld in beeld --- */
+.card-enter {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: card-in var(--motion-medium) var(--motion-ease) forwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes card-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Skeleton loader --- */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgb(var(--color-panel));
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--color-panel-hover) / 0.6),
+    transparent
+  );
+  animation: skeleton-sweep 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+  .card-enter {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

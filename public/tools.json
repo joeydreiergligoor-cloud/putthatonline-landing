@@ -1,0 +1,21 @@
+{
+  "root": "putthatonline.com",
+  "tools": [
+    {
+      "slug": "markitdown",
+      "name": "MarkItDown",
+      "subdomain": "markitdown.putthatonline.com",
+      "description": "Zet documenten (Office, PDF, HTML, afbeeldingen) om naar schone Markdown.",
+      "category": "Conversie",
+      "status": "online"
+    },
+    {
+      "slug": "soon-1",
+      "name": "Volgende tool",
+      "subdomain": "binnenkort.putthatonline.com",
+      "description": "Hier verschijnt binnenkort een nieuwe tool.",
+      "category": "Binnenkort",
+      "status": "soon"
+    }
+  ]
+}

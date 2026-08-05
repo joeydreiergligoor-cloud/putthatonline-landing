@@ -1,0 +1,42 @@
+/*
+  ACTIEF THEMA — "Signaal"
+  ------------------------------------------------------------------
+  Dit bestand is de enige plek die je hoeft aan te passen (of te
+  vervangen door een preset uit src/theme/presets/) om de hele site
+  een ander uiterlijk te geven. Componenten verwijzen nooit direct
+  naar een kleur of lettertype — altijd naar een variabele hieronder.
+
+  Kleuren zijn "R G B" (zonder komma's) zodat Tailwind er zelf nog
+  transparantie (/50 etc.) op kan toepassen.
+*/
+
+:root {
+  /* --- Kleur --- */
+  --color-bg: 18 21 27; /* ink */
+  --color-panel: 26 31 40;
+  --color-panel-hover: 35 42 54;
+  --color-border: 42 49 64;
+  --color-text: 236 232 222; /* parchment */
+  --color-muted: 139 147 163;
+  --color-accent: 201 162 39; /* brass */
+  --color-accent-dim: 138 110 29;
+  --color-status-online: 79 168 118; /* signal green */
+  --color-status-soon: 226 163 61; /* amber */
+  --color-status-offline: 139 147 163;
+
+  /* --- Typografie --- */
+  --font-display: "JetBrains Mono", ui-monospace, "SF Mono", monospace;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* --- Vorm --- */
+  --radius-card: 0.5rem;
+  --radius-pill: 999px;
+  --border-width: 1px;
+
+  /* --- Motion (respecteert prefers-reduced-motion, zie index.css) --- */
+  --motion-fast: 150ms;
+  --motion-medium: 400ms;
+  --motion-slow: 900ms;
+  --motion-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
