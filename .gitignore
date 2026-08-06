@@ -1,0 +1,11 @@
+# Geheimen en lokale wizard-instellingen (nooit naar git)
+.wizard.env
+.env
+.env.*
+
+# Build-output en dependencies
+node_modules/
+dist/
+
+# Backups die de wizards zelf maken
+*.bak

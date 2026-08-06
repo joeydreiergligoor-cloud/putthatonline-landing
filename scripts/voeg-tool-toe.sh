@@ -7,6 +7,25 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 require_cmd python3 "sudo apt install python3"
 TOOLS_JSON="${PROJECT_ROOT}/public/tools.json"
 
+# --- Optioneel: gegevens direct meegeven vanuit een ander script ---
+preset_naam=""
+preset_subdomein=""
+preset_omschrijving=""
+preset_categorie=""
+preset_status=""
+auto_confirm=false
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --naam) preset_naam="$2"; shift 2 ;;
+        --subdomein) preset_subdomein="$2"; shift 2 ;;
+        --omschrijving) preset_omschrijving="$2"; shift 2 ;;
+        --categorie) preset_categorie="$2"; shift 2 ;;
+        --status) preset_status="$2"; shift 2 ;;
+        --yes) auto_confirm=true; shift ;;
+        *) shift ;;
+    esac
+done
+
 title "Wizard: nieuwe tool toevoegen"
 
 if [[ ! -f "$TOOLS_JSON" ]]; then
@@ -15,7 +34,7 @@ if [[ ! -f "$TOOLS_JSON" ]]; then
 fi
 
 # --- Stap 1: gegevens van de nieuwe tool ---
-naam=$(ask "Naam van de tool (bv. ActivePieces)")
+naam="${preset_naam:-$(ask "Naam van de tool (bv. ActivePieces)")}"
 if [[ -z "$naam" ]]; then
     err "Naam mag niet leeg zijn."
     exit 1
@@ -24,27 +43,35 @@ fi
 slug_default=$(echo "$naam" | tr '[:upper:]' '[:lower:]' | tr -cs 'a-z0-9' '-' | sed 's/^-*//;s/-*$//')
 slug=$(ask "Unieke code (slug, geen spaties)" "$slug_default")
 
-subdomein_default="${slug}.putthatonline.com"
-subdomein=$(ask "Subdomein" "$subdomein_default")
+subdomein_default="${preset_subdomein:-${slug}.putthatonline.com}"
+if [[ -n "$preset_subdomein" ]]; then
+    subdomein="$preset_subdomein"
+else
+    subdomein=$(ask "Subdomein" "$subdomein_default")
+fi
 if ! [[ "$subdomein" =~ ^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$ ]]; then
     err "Dat ziet er niet uit als een geldig domein (bv. naam.putthatonline.com)."
     exit 1
 fi
 
-omschrijving=$(ask "Korte omschrijving (één zin)")
-categorie=$(ask "Categorie (bv. Automation, Conversie, Monitoring)" "Overig")
+omschrijving="${preset_omschrijving:-$(ask "Korte omschrijving (één zin)")}"
+categorie="${preset_categorie:-$(ask "Categorie (bv. Automation, Conversie, Monitoring)" "Overig")}"
 
-echo ""
-echo "Status van de tool:"
-echo "  1) online   — direct klikbaar, groen bolletje"
-echo "  2) soon     — zichtbaar maar nog niet klikbaar"
-echo "  3) offline  — grijs, niet klikbaar"
-status_keuze=$(ask "Kies 1, 2 of 3" "1")
-case "$status_keuze" in
-    2) status="soon" ;;
-    3) status="offline" ;;
-    *) status="online" ;;
-esac
+if [[ -n "$preset_status" ]]; then
+    status="$preset_status"
+else
+    echo ""
+    echo "Status van de tool:"
+    echo "  1) online   — direct klikbaar, groen bolletje"
+    echo "  2) soon     — zichtbaar maar nog niet klikbaar"
+    echo "  3) offline  — grijs, niet klikbaar"
+    status_keuze=$(ask "Kies 1, 2 of 3" "1")
+    case "$status_keuze" in
+        2) status="soon" ;;
+        3) status="offline" ;;
+        *) status="online" ;;
+    esac
+fi
 
 # --- Stap 2: voorbeeld tonen ---
 title "Controleer de gegevens"
@@ -57,7 +84,7 @@ cat <<EOF
   Status      : ${status}
 EOF
 echo ""
-if ! confirm "Toevoegen aan tools.json?" "j"; then
+if ! $auto_confirm && ! confirm "Toevoegen aan tools.json?" "j"; then
     warn "Geannuleerd, er is niets gewijzigd."
     exit 0
 fi

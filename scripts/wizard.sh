@@ -19,6 +19,9 @@ Wat wil je doen?
 
   5) Van thema/vormgeving wisselen
 
+  6) Nieuwe tool deployen (lokale map met Dockerfile → publiek subdomein,
+     volledig automatisch: Coolify + Cloudflare + verificatie)
+
   0) Afsluiten
 EOF
 echo ""
@@ -30,5 +33,6 @@ case "$keuze" in
     3) exec "${SCRIPT_DIR}/cloudflare-route-wizard.sh" ;;
     4) exec "${SCRIPT_DIR}/coolify-deploy.sh" ;;
     5) exec "${SCRIPT_DIR}/wissel-thema.sh" ;;
+    6) exec "${SCRIPT_DIR}/nieuwe-tool-deployen.sh" ;;
     *) echo "Tot ziens."; exit 0 ;;
 esac

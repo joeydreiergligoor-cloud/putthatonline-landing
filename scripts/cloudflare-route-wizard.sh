@@ -8,11 +8,19 @@ source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
 require_cmd curl "sudo apt install curl"
 require_cmd python3 "sudo apt install python3"
 
-# --- Optioneel: subdomein direct meegeven vanuit een ander script ---
+# --- Optioneel: gegevens direct meegeven vanuit een ander script ---
 preset_hostname=""
+preset_service=""
+no_tls_verify=false
+auto_confirm=false
+DRY_RUN=false
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --hostname) preset_hostname="$2"; shift 2 ;;
+        --service) preset_service="$2"; shift 2 ;;
+        --no-tls-verify) no_tls_verify=true; shift ;;
+        --yes) auto_confirm=true; shift ;;
+        --dry-run) DRY_RUN=true; shift ;;
         *) shift ;;
     esac
 done
@@ -50,10 +58,14 @@ API_BASE="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/cfd_tun
 
 # --- Stap 2: hostname en interne service opvragen ---
 hostname="${preset_hostname:-$(ask "Subdomein voor deze route (bv. flow.putthatonline.com)")}"
-echo ""
-echo "Het 'interne adres' is waar Coolify de container op laat luisteren."
-echo "Zelfde patroon als bij markitdown, bv. containernaam:poort — bv. putthatonline-landing:80"
-service=$(ask "Intern adres (service)")
+if [[ -n "$preset_service" ]]; then
+    service="$preset_service"
+else
+    echo ""
+    echo "Het 'interne adres' is waar Coolify de container op laat luisteren."
+    echo "Zelfde patroon als bij markitdown, bv. containernaam:poort — bv. putthatonline-landing:80"
+    service=$(ask "Intern adres (service)")
+fi
 if [[ ! "$service" =~ ^(http|https|tcp|ssh):// ]] && [[ "$service" != http_status:* ]]; then
     service="http://${service}"
 fi
@@ -70,11 +82,11 @@ if [[ "$success" != "True" ]]; then
 fi
 
 # --- Stap 4: nieuwe ingress-lijst opbouwen (bestaande routes blijven staan) ---
-new_config=$(echo "$get_response" | python3 - "$hostname" "$service" <<'PYEOF'
+new_config=$(echo "$get_response" | python3 - "$hostname" "$service" "$no_tls_verify" <<'PYEOF'
 import json
 import sys
 
-hostname, service = sys.argv[1], sys.argv[2]
+hostname, service, no_tls_verify = sys.argv[1], sys.argv[2], sys.argv[3] == "true"
 data = json.load(sys.stdin)
 ingress = data.get("result", {}).get("config", {}).get("ingress", []) or []
 
@@ -83,6 +95,8 @@ ingress = [r for r in ingress if r.get("hostname") != hostname]
 
 # Laatste regel is meestal de catch-all (geen hostname). Nieuwe regel ervoor zetten.
 new_rule = {"hostname": hostname, "service": service}
+if no_tls_verify:
+    new_rule["originRequest"] = {"noTLSVerify": True}
 if ingress and "hostname" not in ingress[-1]:
     ingress.insert(len(ingress) - 1, new_rule)
 else:
@@ -99,7 +113,12 @@ echo ""
 warn "Dit vervangt de volledige route-lijst van de tunnel. Bestaande routes"
 warn "(zoals markitdown) blijven staan, maar controleer de preview hierboven."
 
-if ! confirm "Doorvoeren bij Cloudflare?" "n"; then
+if $DRY_RUN; then
+    info "[dry-run] PUT ${API_BASE} zou hierboven getoond worden doorgevoerd."
+    exit 0
+fi
+
+if ! $auto_confirm && ! confirm "Doorvoeren bij Cloudflare?" "n"; then
     warn "Geannuleerd, er is niets gewijzigd bij Cloudflare."
     exit 0
 fi
