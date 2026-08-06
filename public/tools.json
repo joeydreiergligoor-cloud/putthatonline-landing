@@ -3,9 +3,9 @@
   "tools": [
     {
       "slug": "markitdown",
-      "name": "MarkItDown",
-      "subdomain": "markitdown.putthatonline.com",
-      "description": "Zet documenten (Office, PDF, HTML, afbeeldingen) om naar schone Markdown.",
+      "name": "Markitdown",
+      "subdomain": "convert.putthatonline.com",
+      "description": "uploaden bestand om om te zetten naar MD",
       "category": "Conversie",
       "status": "online"
     },
