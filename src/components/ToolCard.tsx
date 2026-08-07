@@ -16,6 +16,55 @@ const STATUS_DOT: Record<Tool["status"], string> = {
 export default function ToolCard({ tool, delayMs }: { tool: Tool; delayMs: number }) {
   const isLive = tool.status === "online";
   const style = { "--delay": `${delayMs}ms` } as CSSProperties;
+  const wrapperClass = "card-enter block h-full focus-visible:outline-none";
+
+  const header = (
+    <div className="flex items-start justify-between gap-3">
+      <h2 className="font-display text-lg font-medium text-text">{tool.name}</h2>
+      <span className="flex items-center gap-1.5 shrink-0 pt-1">
+        <span className={`h-2 w-2 rounded-full ${STATUS_DOT[tool.status]}`} />
+        <span className="font-mono text-[11px] uppercase tracking-wide text-muted">
+          {STATUS_LABEL[tool.status]}
+        </span>
+      </span>
+    </div>
+  );
+
+  // Groepstegel: geen directe link, maar een lijstje met de apps die eronder vallen.
+  if (tool.apps && tool.apps.length > 0) {
+    return (
+      <div
+        className={`${wrapperClass} rounded-card border border-border bg-panel p-5`}
+        style={style}
+      >
+        {header}
+        <p className="mt-2 text-sm text-muted leading-relaxed">{tool.description}</p>
+
+        <ul className="mt-4 space-y-2">
+          {tool.apps.map((app) => (
+            <li key={app.subdomain}>
+              <a
+                href={`https://${app.subdomain}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${app.name} op ${app.subdomain}`}
+                className="group/app flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 transition-colors duration-fast ease-theme hover:border-accent-dim hover:bg-panel-hover"
+              >
+                <span className="text-sm text-text">{app.name}</span>
+                <span className="font-mono text-xs text-accent-dim group-hover/app:text-accent shrink-0">
+                  open →
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <span className="mt-3 inline-block font-mono text-[10px] uppercase tracking-wide text-muted">
+          {tool.category}
+        </span>
+      </div>
+    );
+  }
 
   const content = (
     <div
@@ -23,15 +72,7 @@ export default function ToolCard({ tool, delayMs }: { tool: Tool; delayMs: numbe
         isLive ? "hover:border-accent-dim hover:bg-panel-hover" : "opacity-70"
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <h2 className="font-display text-lg font-medium text-text">{tool.name}</h2>
-        <span className="flex items-center gap-1.5 shrink-0 pt-1">
-          <span className={`h-2 w-2 rounded-full ${STATUS_DOT[tool.status]}`} />
-          <span className="font-mono text-[11px] uppercase tracking-wide text-muted">
-            {STATUS_LABEL[tool.status]}
-          </span>
-        </span>
-      </div>
+      {header}
 
       <p className="mt-2 text-sm text-muted leading-relaxed">{tool.description}</p>
 
@@ -54,8 +95,6 @@ export default function ToolCard({ tool, delayMs }: { tool: Tool; delayMs: numbe
       </span>
     </div>
   );
-
-  const wrapperClass = "card-enter block h-full focus-visible:outline-none";
 
   if (!isLive) {
     return (

@@ -2,12 +2,17 @@
   "root": "putthatonline.com",
   "tools": [
     {
-      "slug": "markitdown",
-      "name": "Markitdown",
-      "subdomain": "convert.putthatonline.com",
-      "description": "uploaden bestand om om te zetten naar MD",
-      "category": "Conversie",
-      "status": "online"
+      "slug": "ai-tools",
+      "name": "AI tools",
+      "description": "Verzameling AI-tools. Klik op een app om hem te openen.",
+      "category": "AI",
+      "status": "online",
+      "apps": [
+        {
+          "name": "Markitdown",
+          "subdomain": "convert.putthatonline.com"
+        }
+      ]
     },
     {
       "slug": "immich",
