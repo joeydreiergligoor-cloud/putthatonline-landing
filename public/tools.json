@@ -11,6 +11,10 @@
         {
           "name": "Markitdown",
           "subdomain": "convert.putthatonline.com"
+        },
+        {
+          "name": "Prompt Architect",
+          "subdomain": "prompting.putthatonline.com"
         }
       ]
     },
