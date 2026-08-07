@@ -10,6 +10,14 @@
       "status": "online"
     },
     {
+      "slug": "immich",
+      "name": "Immich",
+      "subdomain": "photo.putthatonline.com",
+      "description": "Eigen foto- en videobibliotheek met automatische back-up vanaf je telefoon.",
+      "category": "Foto's",
+      "status": "online"
+    },
+    {
       "slug": "soon-1",
       "name": "Volgende tool",
       "subdomain": "binnenkort.putthatonline.com",
